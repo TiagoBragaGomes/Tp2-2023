@@ -12,7 +12,6 @@ app.post('/app', (req, res) => {
 fs.writeFileSync(req.body.email+'.json', JSON.stringify(req.body))
 res.send({email: req.body.email})
 })
-
 app.put('/app/:email', (req, res) => {
 res.send(JSON.parse(fs.readFileSync(req.body.email+'.json')))
 })
