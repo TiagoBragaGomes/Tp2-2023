@@ -84,4 +84,5 @@ app.get('/delete/:email', (req, res) => {
     fs.unlinkSync(dados)
     res.send("dados apagados com sucesso")
 })
+
 app.listen(8080, () => { console.log("Servidor em http://localhost:8080") })
