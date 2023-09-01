@@ -8,7 +8,6 @@ app.use(express.json())
 app.get('/app/:email', (req, res) => {
 res.send({lista: fs.readdirSync('./').filter(e => e.includes('.json') && e.includes('@')) })
 })
-
 app.post('/app', (req, res) => {
 fs.writeFileSync(req.body.email+'.json', JSON.stringify(req.body))
 res.send({email: req.body.email})
