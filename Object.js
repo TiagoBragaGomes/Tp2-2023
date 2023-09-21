@@ -18,6 +18,9 @@ const carro = {
     nomedospais: [{
         mutiofacul: "akak",
     }]
+
+
+    
 }
 console.log(carro);
 
