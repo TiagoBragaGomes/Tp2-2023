@@ -20,6 +20,8 @@ while (controlar) {
         default:
             break;
     }
+
+    
 }
 
 let conversoes = [valorRecebido, moeda, valorConvertido]
