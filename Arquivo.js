@@ -57,33 +57,75 @@
 
 // arquivo atualizado
 
+// const express = require('express')
+// const fs = require('fs')
+// const app = express()
+// app.use(express.json())
+// app.get('/app/:email', (req, res) => {
+
+//     res.send(JSON.parse(fs.readFileSync(req.params.email + '.json')))
+// })
+// app.post('/app/post', (req, res) => {
+//     const data = req.body
+//     fs.writeFileSync(data.email + '.json', JSON.stringify(data))
+//     res.send({ email: data.email })
+// })
+// app.put('/app/put', (req, res) => {
+//     const data = req.body
+//     fs.writeFileSync(`${data.email}.json`, JSON.stringify(data), { flag: 'w' })
+//     res.send(`dados atualizados com sucesso`)
+// })
+// app.delete('/app/delete', (req, res) => {
+//     const data = req.body
+//     fs.unlinkSync(data.email + '.json')
+//     res.send('dados apagados')
+// })
+
+// app.all('*', (req, res) => {
+//     res.send({ erro: true, msg: "Rota não definida no servidor." })
+// })
+// app.listen(8080, () => console.log(`server loading`))
+
+
+//Atualização do codigo usando mongo
+
+
 const express = require('express')
-const fs = require('fs')
+const mongoose = require('mongoose')
 const app = express()
 app.use(express.json())
-app.get('/app/:email', (req, res) => {
 
-    res.send(JSON.parse(fs.readFileSync(req.params.email + '.json')))
-})
-app.post('/app/post', (req, res) => {
-    const data = req.body
-    fs.writeFileSync(data.email + '.json', JSON.stringify(data))
-    res.send({ email: data.email })
-})
-app.put('/app/put', (req, res) => {
-    const data = req.body
-    fs.writeFileSync(`${data.email}.json`, JSON.stringify(data), { flag: 'w' })
-    res.send(`dados atualizados com sucesso`)
-})
-app.delete('/app/delete', (req, res) => {
-    const data = req.body
-    fs.unlinkSync(data.email + '.json')
-    res.send('dados apagados')
-})
+const modelodeUsuario = mongoose.model('contas', new mongoose.Schema({
+    email: String,
+    password: String,
+}))
+mongoose.connect('mongodb://localhost:27017/mydatabase')
+  .then(()=>{
 
-app.all('*', (req, res) => {
-    res.send({ erro: true, msg: "Rota não definida no servidor." })
-})
+    app.post('/pegar-dados', async (req,res)=>{
+    const usuarioEncontrado = await modelodeUsuario.findOne(req.body)
+    res.send(usuarioEncontrado)
+    })
 
+    app.post('/postar-dados', async (req,res)=>{
+    const usuarioCriado = await modelodeUsuario.create(req.body)
+    res.send(usuarioCriado)
+    })
 
-app.listen(3000, () => console.log(`server loading`))
+    app.put('/atualizar-dados', async (req,res)=>{
+    const usuarioAtualizado = await modelodeUsuario.findOneAndUpdate(
+        {email: req.body.email, password: req.body.password},
+        {email: req.body.newEmail, password: req.body.newPassword},
+        {returnDocument: 'after'})
+
+    res.send(usuarioAtualizado)
+    })
+
+    app.delete('/delete-dados', async (req,res)=>{
+    const usuarioEncontrado = await modelodeUsuario.findOne(req.body)
+    await modelodeUsuario.deleteOne(req.body, {returnDocument: 'before'})
+    res.send(usuarioEncontrado)
+    })
+
+    app.listen(3000)
+  })
