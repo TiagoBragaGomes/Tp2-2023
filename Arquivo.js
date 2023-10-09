@@ -92,6 +92,15 @@
 
 const express = require('express')
 const mongoose = require('mongoose')
+const dotenv = require('dotenv')
+
+if (process.env.DEVOUPROD === 'DEV') {
+  dotenv.config({path: './config/.env.dev'})
+}
+if (process.env.DEVOUPROD === 'PROD') {
+  dotenv.config({path: './config/.env.prod'})
+}
+
 const app = express()
 app.use(express.json())
 
@@ -99,7 +108,8 @@ const modelodeUsuario = mongoose.model('contas', new mongoose.Schema({
     email: String,
     password: String,
 }))
-mongoose.connect('mongodb://localhost:27017/mydatabase')
+
+mongoose.connect(process.env.URLDOBANCO)
   .then(()=>{
 
     app.post('/pegar-dados', async (req,res)=>{
@@ -129,8 +139,3 @@ mongoose.connect('mongodb://localhost:27017/mydatabase')
 
     app.listen(3000)
   })
-
-
-
-
-  
