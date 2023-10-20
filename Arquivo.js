@@ -95,47 +95,47 @@ const mongoose = require('mongoose')
 const dotenv = require('dotenv')
 
 if (process.env.DEVOUPROD === 'DEV') {
-  dotenv.config({path: './config/.env.dev'})
+  dotenv.config({ path: './config/.env.dev' })
 }
 if (process.env.DEVOUPROD === 'PROD') {
-  dotenv.config({path: './config/.env.prod'})
+  dotenv.config({ path: './config/.env.prod' })
 }
 
 const app = express()
 app.use(express.json())
 
 const modelodeUsuario = mongoose.model('contas', new mongoose.Schema({
-    email: String,
-    password: String,
+  email: String,
+  password: String,
 }))
 
 mongoose.connect(process.env.URLDOBANCO)
-  .then(()=>{
+  .then(() => {
 
-    app.post('/pegar-dados', async (req,res)=>{
-    const usuarioEncontrado = await modelodeUsuario.findOne(req.body)
-    res.send(usuarioEncontrado)
+    app.post('/pegar-dados', async (req, res) => {
+      const usuarioEncontrado = await modelodeUsuario.findOne(req.body)
+      res.send(usuarioEncontrado)
     })
 
-    app.post('/postar-dados', async (req,res)=>{
-    const usuarioCriado = await modelodeUsuario.create(req.body)
-    res.send(usuarioCriado)
+    app.post('/postar-dados', async (req, res) => {
+      const usuarioCriado = await modelodeUsuario.create(req.body)
+      res.send(usuarioCriado)
     })
 
-    app.put('/atualizar-dados', async (req,res)=>{
-    const usuarioAtualizado = await modelodeUsuario.findOneAndUpdate(
-        {email: req.body.email, password: req.body.password},
-        {email: req.body.newEmail, password: req.body.newPassword},
-        {returnDocument: 'after'})
+    app.put('/atualizar-dados', async (req, res) => {
+      const usuarioAtualizado = await modelodeUsuario.findOneAndUpdate(
+        { email: req.body.email, password: req.body.password },
+        { email: req.body.newEmail, password: req.body.newPassword },
+        { returnDocument: 'after' })
 
-    res.send(usuarioAtualizado)
+      res.send(usuarioAtualizado)
     })
 
-    app.delete('/delete-dados', async (req,res)=>{
-    const usuarioEncontrado = await modelodeUsuario.findOne(req.body)
-    await modelodeUsuario.deleteOne(req.body, {returnDocument: 'before'})
-    res.send(usuarioEncontrado)
+    app.delete('/delete-dados', async (req, res) => {
+      const usuarioEncontrado = await modelodeUsuario.findOne(req.body)
+      await modelodeUsuario.deleteOne(req.body, { returnDocument: 'before' })
+      res.send(usuarioEncontrado)
     })
 
-    app.listen(3000)
+    app.listen(8080)
   })
