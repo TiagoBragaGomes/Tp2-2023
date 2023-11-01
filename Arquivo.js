@@ -87,7 +87,7 @@
 // app.listen(8080, () => console.log(`server loading`))
 
 
-//Atualização do codigo usando mongo
+// Atualização do codigo usando mongo
 
 
 const express = require('express')
@@ -109,16 +109,20 @@ const modelodeUsuario = mongoose.model('contas', new mongoose.Schema({
     password: String,
 }))
 
-mongoose.connect(process.env.URLDOBANCO)
+mongoose.connect('mongodb://localhost:27017/db')
   .then(()=>{
 
     app.post('/pegar-dados', async (req,res)=>{
-    const usuarioEncontrado = await modelodeUsuario.findOne(req.body)
+    const usuarioEncontrado = await modelodeUsuario.findOne({email: req.body.email, password: req.body.password})
+    if (usuarioEncontrado === null) {
+      return res.send ("A conta não existe")
+    }
     res.send(usuarioEncontrado)
     })
 
     app.post('/postar-dados', async (req,res)=>{
     const usuarioCriado = await modelodeUsuario.create(req.body)
+    
     res.send(usuarioCriado)
     })
 
